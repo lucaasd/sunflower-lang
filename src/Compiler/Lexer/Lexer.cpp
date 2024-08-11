@@ -1,6 +1,6 @@
 #include "Lexer.hpp"
 #include "Token.hpp"
-#include "Tokens.hpp"
+#include "TokenType.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -8,27 +8,27 @@
 using namespace SunflowerCompiler;
 
 std::vector<Token> defaultTokens = {
-    Token{"return", Tokens::RETURN},
-    Token{"if", Tokens::IF},
-    Token{"else", Tokens::ELSE},
-    Token{"while", Tokens::WHILE},
-    Token{"for", Tokens::FOR},
-    Token{"void", Tokens::VOID},
-    Token{"(", Tokens::LEFT_PAREN},
-    Token{")", Tokens::RIGHT_PAREN},
-    Token{"{", Tokens::LEFT_BRACE},
-    Token{"}", Tokens::RIGHT_BRACE},
-    Token{",", Tokens::COMMA},
-    Token{".", Tokens::DOT},
-    Token{"-", Tokens::MINUS},
-    Token{"+", Tokens::PLUS},
-    Token{";", Tokens::SEMICOLON},
-    Token{"/", Tokens::SLASH},
-    Token{"*", Tokens::STAR},
-    Token{"!", Tokens::BANG},
-    Token{"!=", Tokens::BANG_EQUAL},
-    Token{"=", Tokens::SET_EQUAL},
-    Token{"==", Tokens::EQUAL},
+    Token{"return", TokenType::RETURN},
+    Token{"if", TokenType::IF},
+    Token{"else", TokenType::ELSE},
+    Token{"while", TokenType::WHILE},
+    Token{"for", TokenType::FOR},
+    Token{"void", TokenType::VOID},
+    Token{"(", TokenType::LEFT_PAREN},
+    Token{")", TokenType::RIGHT_PAREN},
+    Token{"{", TokenType::LEFT_BRACE},
+    Token{"}", TokenType::RIGHT_BRACE},
+    Token{",", TokenType::COMMA},
+    Token{".", TokenType::DOT},
+    Token{"-", TokenType::MINUS},
+    Token{"+", TokenType::PLUS},
+    Token{";", TokenType::SEMICOLON},
+    Token{"/", TokenType::SLASH},
+    Token{"*", TokenType::STAR},
+    Token{"!", TokenType::BANG},
+    Token{"!=", TokenType::BANG_EQUAL},
+    Token{"=", TokenType::SET_EQUAL},
+    Token{"==", TokenType::EQUAL},
 };
 
 SunflowerCompiler::Lexer::Lexer(std::string sourceCode)
@@ -42,10 +42,9 @@ void SunflowerCompiler::Lexer::Tokenize()
     index = 0;
     while (CurrentChar() != '\0')
     {
-        int start = index;
-
         if (isalpha(CurrentChar()))
         {
+            int start = index;
             while (isalpha(CurrentChar()))
             {
                 Advance();
@@ -55,9 +54,9 @@ void SunflowerCompiler::Lexer::Tokenize()
             auto it = std::find_if(
                 defaultTokens.begin(),
                 defaultTokens.end(),
-                [&value](const Token &person)
+                [&value](const Token &_token)
                 {
-                    return person.name == value;
+                    return _token.name == value;
                 });
             if (it != defaultTokens.end())
             {
@@ -65,13 +64,47 @@ void SunflowerCompiler::Lexer::Tokenize()
             }
             else
             {
-                tokens.push_back(Token{value, Tokens::IDENTIFIER});
+                tokens.push_back(Token{value, TokenType::SYMBOL});
             }
+            continue;
+        }
+
+        else if (isspace(CurrentChar()))
+        {
+            int start = index;
+            Advance();
+            continue;
+        }
+        else if (isdigit(CurrentChar()))
+        {
+            int start = index;
+            Advance();
+            continue;
         }
         else
         {
+            std::string value = std::string(1, source[index]);
+            std::cout << "Value: " << value << std::endl;
+            auto it = std::find_if(
+                defaultTokens.begin(),
+                defaultTokens.end(),
+                [&value](const Token &_token)
+                {
+                    return _token.name == value;
+                });
+            if (it != defaultTokens.end())
+            {
+                std::cout << "Token: " << it->name << std::endl;
+                tokens.push_back(Token{value, it->type});
+            }
+            else
+            {
+                tokens.push_back(Token{value, TokenType::UNKNOWN});
+            }
             Advance();
+            continue;
         }
+        continue;
     }
 }
 

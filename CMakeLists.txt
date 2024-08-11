@@ -12,11 +12,7 @@ endif()
 
 set(CMAKE_C_COMPILER ${CLANG_PATH})
 set(CMAKE_CXX_COMPILER ${CLANG_CPP_PATH})
-set(
-    SOURCES
-    src/main.cpp
-    src/Compiler/Lexer/Lexer.cpp
-)
+file(GLOB_RECURSE SOURCES src/*.cpp)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 

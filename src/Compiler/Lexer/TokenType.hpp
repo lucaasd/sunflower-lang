@@ -2,7 +2,7 @@
 
 namespace SunflowerCompiler
 {
-    enum class Tokens
+    enum class TokenType
     {
         RETURN,
         IF,
@@ -30,7 +30,7 @@ namespace SunflowerCompiler
         GREATER_EQUAL,
         LESS,
         LESS_EQUAL,
-        IDENTIFIER,
+        SYMBOL,
         UNKNOWN
     };
 }
