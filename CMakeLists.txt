@@ -12,13 +12,20 @@ endif()
 
 set(CMAKE_C_COMPILER ${CLANG_PATH})
 set(CMAKE_CXX_COMPILER ${CLANG_CPP_PATH})
+set(
+    SOURCES
+    src/main.cpp
+    src/Compiler/Lexer/Lexer.cpp
+)
+
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 project(sunflower)
 
-add_executable(Sunflower src/main.cpp)
+add_executable(Sunflower ${SOURCES})
 
 add_custom_command(TARGET Sunflower
     POST_BUILD
     COMMAND ${CMAKE_C_COMPILER} -S -emit-llvm -o $<TARGET_FILE:Sunflower>.ll ${CMAKE_SOURCE_DIR}/src/main.cpp
-    COMMENT "Generating LLVM IR"
+    COMMENT "Generating LLVM IR at $<TARGET_FILE:Sunflower>.ll"
 )
