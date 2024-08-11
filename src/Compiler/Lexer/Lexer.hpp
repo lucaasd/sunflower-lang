@@ -1,19 +1,24 @@
+#pragma once
+
 #include <string>
-#include <list>
+#include <vector>
+#include "Token.hpp"
 
 namespace SunflowerCompiler
 {
     class Lexer
     {
     public:
-        Lexer(std::string source);
+        Lexer(std::string sourceCode);
         std::string source;
         void Tokenize();
-        std::list<char> GetTokens();
-        char CurrentToken();
+        std::vector<Token> GetTokens();
+        char CurrentChar();
         void Advance();
+        void Reset();
 
     private:
-        std::list<char> tokens;
+        std::vector<Token> tokens;
+        int index = 0;
     };
 }
