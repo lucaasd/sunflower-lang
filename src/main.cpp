@@ -1,8 +1,8 @@
-#include <iostream>
 #include "Compiler/Lexer/Lexer.hpp"
 #include "Compiler/Lexer/Token.hpp"
 #include "Compiler/Lexer/TokenType.hpp"
 #include "../magic-enum/include/magic_enum/magic_enum.hpp"
+#include <iostream>
 #include <vector>
 
 /*

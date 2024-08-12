@@ -1,6 +1,6 @@
-#include "Lexer.hpp"
-#include "Token.hpp"
-#include "TokenType.hpp"
+#include "Compiler/Lexer/Lexer.hpp"
+#include "Compiler/Lexer/Token.hpp"
+#include "Compiler/Lexer/TokenType.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -14,6 +14,7 @@ std::vector<Token> defaultTokens = {
     Token{"while", TokenType::WHILE},
     Token{"for", TokenType::FOR},
     Token{"void", TokenType::VOID},
+    Token{"null", TokenType::NULL_TOKEN},
     Token{"(", TokenType::LEFT_PAREN},
     Token{")", TokenType::RIGHT_PAREN},
     Token{"{", TokenType::LEFT_BRACE},
@@ -84,7 +85,6 @@ void SunflowerCompiler::Lexer::Tokenize()
         else
         {
             std::string value = std::string(1, source[index]);
-            std::cout << "Value: " << value << std::endl;
             auto it = std::find_if(
                 defaultTokens.begin(),
                 defaultTokens.end(),
@@ -94,7 +94,6 @@ void SunflowerCompiler::Lexer::Tokenize()
                 });
             if (it != defaultTokens.end())
             {
-                std::cout << "Token: " << it->name << std::endl;
                 tokens.push_back(Token{value, it->type});
             }
             else
