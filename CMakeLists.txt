@@ -16,5 +16,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 project(Sunflower)
 
+enable_testing()
+
 add_subdirectory(src)
 add_subdirectory(test)
