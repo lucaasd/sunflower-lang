@@ -16,6 +16,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 project(Sunflower)
 
+include_directories(${CMAKE_SOURCE_DIR}/magic-enum/include)
+
 enable_testing()
 
 add_subdirectory(src)

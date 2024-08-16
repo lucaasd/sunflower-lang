@@ -17,6 +17,28 @@ TEST(LexerTest, TestIdentifier)
     EXPECT_EQ(token.name, "main");
 }
 
+TEST(LexerTest, TestIdentifierWithMultipleTokens)
+{
+    std::string expectedName = "main";
+    TokenType expectedType = TokenType::SYMBOL;
+    std::string source = "void main() {}";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    auto it = std::find_if(
+        tokens.begin(),
+        tokens.end(),
+        [&expectedName, &expectedType](const Token &token)
+        {
+            return token.name == expectedName && token.type == expectedType;
+        });
+    if (it != tokens.end())
+    {
+        EXPECT_EQ(it->name, expectedName);
+        EXPECT_EQ(it->type, expectedType);
+    }
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
