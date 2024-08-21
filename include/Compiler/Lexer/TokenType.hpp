@@ -31,6 +31,9 @@ namespace SunflowerCompiler
         LESS,
         LESS_EQUAL,
         SYMBOL,
-        UNKNOWN
+        UNKNOWN,
+        END_OF_FILE,
+        INT_NUMBER,
+        FLOAT_NUMBER
     };
 }
