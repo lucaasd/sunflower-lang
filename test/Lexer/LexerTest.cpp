@@ -4,6 +4,7 @@
 #include "Compiler/Lexer/Lexer.hpp"
 #include "Compiler/Lexer/Token.hpp"
 #include "Compiler/Lexer/TokenType.hpp"
+#include "magic_enum/magic_enum.hpp"
 
 using namespace SunflowerCompiler;
 
@@ -36,6 +37,60 @@ TEST(LexerTest, TestIdentifierWithMultipleTokens)
     {
         EXPECT_EQ(it->name, expectedName);
         EXPECT_EQ(it->type, expectedType);
+    }
+}
+
+TEST(LexerTest, TestInteger)
+{
+    std::string source = "123";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    Token token = lexer.GetTokens()[0];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::INT_NUMBER);
+    EXPECT_EQ(token.name, "123");
+}
+
+TEST(LexerTest, TestNegativeInteger)
+{
+    std::string source = "-123";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    Token token = lexer.GetTokens()[0];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::INT_NUMBER);
+    EXPECT_EQ(token.name, "-123");
+}
+
+TEST(LexerTest, TestFloat)
+{
+    std::string source = "123.456";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    Token token = lexer.GetTokens()[0];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::FLOAT_NUMBER);
+    EXPECT_EQ(token.name, "123.456");
+}
+
+TEST(LexerTest, TestNegativeFloat)
+{
+    std::string source = "-123.456";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    Token token = tokens[0];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::FLOAT_NUMBER);
+    EXPECT_EQ(token.name, "-123.456");
+    std::cout << "Tokens" << std::endl;
+    for (const Token &token : tokens)
+    {
+        std::cout << token.name << " " << magic_enum::enum_name(token.type) << std::endl;
     }
 }
 

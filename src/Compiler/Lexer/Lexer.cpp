@@ -7,7 +7,7 @@
 
 using namespace SunflowerCompiler;
 
-std::vector<Token> defaultTokens = {
+std::vector<Token> keywords = {
     Token{"return", TokenType::RETURN},
     Token{"if", TokenType::IF},
     Token{"else", TokenType::ELSE},
@@ -15,6 +15,9 @@ std::vector<Token> defaultTokens = {
     Token{"for", TokenType::FOR},
     Token{"void", TokenType::VOID},
     Token{"null", TokenType::NULL_TOKEN},
+};
+
+std::vector<Token> delimiters = {
     Token{"(", TokenType::LEFT_PAREN},
     Token{")", TokenType::RIGHT_PAREN},
     Token{"{", TokenType::LEFT_BRACE},
@@ -32,104 +35,150 @@ std::vector<Token> defaultTokens = {
     Token{"==", TokenType::EQUAL},
 };
 
-SunflowerCompiler::Lexer::Lexer(std::string sourceCode)
+namespace SunflowerCompiler
 {
-    this->source = sourceCode;
-    index = 0;
-}
-
-void SunflowerCompiler::Lexer::Tokenize()
-{
-    index = 0;
-    while (CurrentChar() != '\0')
+    void Lexer::Tokenize()
     {
-        if (isalpha(CurrentChar()))
+        while (CurrentChar() != '\0')
         {
-            int start = index;
-            while (isalpha(CurrentChar()))
+            if (isspace(CurrentChar()))
             {
                 Advance();
+                continue;
             }
-
-            std::string value = source.substr(start, index - start);
-            auto it = std::find_if(
-                defaultTokens.begin(),
-                defaultTokens.end(),
-                [&value](const Token &_token)
-                {
-                    return _token.name == value;
-                });
-            if (it != defaultTokens.end())
+            else if (CurrentChar() == '-')
             {
-                tokens.push_back(Token{value, it->type});
+                char hyphen = CurrentChar();
+                Advance();
+                if (isdigit(CurrentChar()))
+                {
+                    Digit(true);
+                    continue;
+                }
+                tokens.push_back(Token{std::string(1, hyphen), TokenType::MINUS});
+                continue;
+            }
+            else if (isdigit(CurrentChar()))
+            {
+                Digit();
+            }
+            else if (isalpha(CurrentChar()))
+            {
+                int start = index;
+                Keyword();
             }
             else
             {
-                tokens.push_back(Token{value, TokenType::SYMBOL});
+                char currentChar = CurrentChar();
+                auto it = std::find_if(
+                    delimiters.begin(),
+                    delimiters.end(),
+                    [&currentChar](const Token &token)
+                    {
+                        return token.name == std::string(1, currentChar);
+                    });
+
+                if (it != delimiters.end())
+                {
+                    tokens.push_back(Token{
+                        std::string{CurrentChar()},
+                        it->type});
+                }
+                else
+                {
+                    tokens.push_back(Token{std::string{CurrentChar()}, TokenType::UNKNOWN});
+                }
             }
-            continue;
+            Advance();
+        }
+    }
+
+    void Lexer::Keyword()
+    {
+        int start = index;
+        while (isalpha(CurrentChar()))
+        {
+            Advance();
+        }
+        std::string value = source.substr(start, index - start);
+        std::cerr << value << std::endl;
+        auto it = std::find_if(
+            keywords.begin(), keywords.end(),
+            [value](Token const &token)
+            {
+                return token.name == value;
+            });
+        if (it != keywords.end())
+        {
+            tokens.push_back(Token{value, it->type});
+            return;
+        }
+        tokens.push_back(Token{value, TokenType::SYMBOL});
+    }
+
+    void Lexer::Digit(bool isNegative)
+    {
+        int start = index;
+        bool hasDot;
+        bool passedDecimal = false;
+        while (isalnum(CurrentChar()) || CurrentChar() == '.')
+        {
+            if (CurrentChar() == '.')
+            {
+                if (hasDot)
+                {
+                    tokens.push_back(Token{source.substr(start, index - start), TokenType::UNKNOWN});
+                    break;
+                }
+                hasDot = true;
+            }
+
+            if (isalpha(CurrentChar()) && !passedDecimal && hasDot)
+            {
+                int start = index;
+                while (isalnum(CurrentChar()))
+                {
+                    Advance();
+                }
+                std::string value = source.substr(start, index - start);
+
+                if (std::any_of(value.begin(), value.end(), ::isdigit))
+                {
+                    tokens.push_back(Token{value, TokenType::UNKNOWN});
+                    break;
+                }
+                passedDecimal = true;
+            }
+            Advance();
         }
 
-        else if (isspace(CurrentChar()))
+        std::string value = source.substr(start, index - start);
+        isNegative ? value = "-" + value : value;
+        if (hasDot)
         {
-            int start = index;
-            Advance();
-            continue;
-        }
-        else if (isdigit(CurrentChar()))
-        {
-            int start = index;
-            Advance();
-            continue;
+            tokens.push_back(Token{value, TokenType::FLOAT_NUMBER});
         }
         else
         {
-            std::string value = std::string(1, source[index]);
-            auto it = std::find_if(
-                defaultTokens.begin(),
-                defaultTokens.end(),
-                [&value](const Token &_token)
-                {
-                    return _token.name == value;
-                });
-            if (it != defaultTokens.end())
-            {
-                tokens.push_back(Token{value, it->type});
-            }
-            else
-            {
-                tokens.push_back(Token{value, TokenType::UNKNOWN});
-            }
-            Advance();
-            continue;
+            tokens.push_back(Token{value, TokenType::INT_NUMBER});
         }
-        continue;
     }
-}
 
-std::vector<Token> SunflowerCompiler::Lexer::GetTokens()
-{
-    return tokens;
-}
+    void Lexer::Advance()
+    {
+        if (index < source.size())
+        {
+            index++;
+        }
+    }
 
-char SunflowerCompiler::Lexer::CurrentChar()
-{
-    if (index < source.length())
+    char Lexer::CurrentChar()
     {
         return source[index];
     }
-    return '\0';
-}
 
-void SunflowerCompiler::Lexer::Advance()
-{
-    if (index < source.length())
+    std::vector<Token> Lexer::GetTokens()
     {
-        index++;
+        return tokens;
     }
-}
-
-void SunflowerCompiler::Lexer::Reset()
-{
-    index = 0;
 }
