@@ -16,6 +16,7 @@ namespace SunflowerCompiler
         char CurrentChar();
         void Advance();
         void Reset();
+        void Char();
 
     private:
         std::vector<Token> tokens;
