@@ -94,6 +94,30 @@ TEST(LexerTest, TestNegativeFloat)
     }
 }
 
+TEST(LexerTest, TestChar)
+{
+    std::string source = "'a'";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    Token token = lexer.GetTokens()[0];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::CHAR);
+    EXPECT_EQ(token.name, "'a'");
+}
+
+TEST(LexerTest, TestCharWithMultipleTokens)
+{
+    std::string source = "return 'a'";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    Token token = lexer.GetTokens()[1];
+    std::cout << magic_enum::enum_name(token.type) << std::endl;
+    std::cout << token.name << std::endl;
+    EXPECT_EQ(token.type, TokenType::CHAR);
+    EXPECT_EQ(token.name, "'a'");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
