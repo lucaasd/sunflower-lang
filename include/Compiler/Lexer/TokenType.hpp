@@ -34,6 +34,9 @@ namespace SunflowerCompiler
         UNKNOWN,
         END_OF_FILE,
         INT_NUMBER,
-        FLOAT_NUMBER
+        FLOAT_NUMBER,
+        STRING,
+        CHAR,
+        REGEX
     };
 }

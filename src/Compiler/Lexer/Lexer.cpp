@@ -67,6 +67,11 @@ namespace SunflowerCompiler
                 int start = index;
                 Keyword();
             }
+            else if (CurrentChar() == '\'')
+            {
+                Char();
+                continue;
+            }
             else
             {
                 char currentChar = CurrentChar();
@@ -162,6 +167,23 @@ namespace SunflowerCompiler
         {
             tokens.push_back(Token{value, TokenType::INT_NUMBER});
         }
+    }
+
+    void Lexer::Char()
+    {
+        int start = index;
+        if (CurrentChar() == '\'')
+        {
+            Advance();
+            Advance();
+        }
+        std::string value = source.substr(start, (index - start) + 1);
+        if (CurrentChar() != '\'')
+        {
+            tokens.push_back(Token{value, TokenType::UNKNOWN});
+            return;
+        }
+        tokens.push_back(Token{value, TokenType::CHAR});
     }
 
     void Lexer::Advance()
