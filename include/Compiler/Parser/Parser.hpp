@@ -1,11 +1,21 @@
 #include <vector>
-#include "Lexer/Token.hpp"
+#include "RootNode.hpp"
+#include "Compiler/Lexer/Token.hpp"
 
-using namespace SunflowerCompiler;
-
-class Parser
+namespace SunflowerCompiler
 {
-public:
-    Parser();
-    void Parse(std::vector<Token>);
-};
+    class Parser
+    {
+    public:
+        Parser(std::vector<Token> source) : tokens(source) {}
+        void Parse();
+        Token CurrentToken();
+        void Advance();
+        RootNode rootNode = RootNode{};
+        int index = 0;
+        int depth = 0;
+
+    private:
+        std::vector<Token> tokens;
+    };
+}
