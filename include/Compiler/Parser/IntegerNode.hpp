@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Node.hpp"
+#include "LiteralNode.hpp"
 #include <string>
 
 namespace SunflowerCompiler
 {
-    struct IntegerNode : Node
+    struct IntegerNode : LiteralNode
     {
         int value;
         std::string Print();

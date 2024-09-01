@@ -10,7 +10,13 @@ namespace SunflowerCompiler
         WHILE,
         FOR,
         NULL_TOKEN,
+        IMPORT,
         VOID,
+        FUNCTION,
+        CLASS,
+        STRUCT,
+        CONST,
+        VAR,
         LEFT_PAREN,
         RIGHT_PAREN,
         LEFT_BRACE,
@@ -37,6 +43,6 @@ namespace SunflowerCompiler
         FLOAT_NUMBER,
         STRING,
         CHAR,
-        REGEX
+        REGEX,
     };
 }

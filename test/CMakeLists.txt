@@ -37,6 +37,6 @@ add_executable(SunflowerParserTest ${PARSER_TEST_SOURCES})
 
 target_include_directories(SunflowerParserTest PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-target_link_libraries(SunflowerParserTest PUBLIC gtest gtest_main Parser)
+target_link_libraries(SunflowerParserTest PUBLIC gtest gtest_main Parser Lexer)
 
 add_test(NAME ParserTest COMMAND SunflowerParserTest)

@@ -15,6 +15,12 @@ std::vector<Token> keywords = {
     Token{"for", TokenType::FOR},
     Token{"void", TokenType::VOID},
     Token{"null", TokenType::NULL_TOKEN},
+    Token{"const", TokenType::CONST},
+    Token{"var", TokenType::VAR},
+    Token{"function", TokenType::FUNCTION},
+    Token{"class", TokenType::CLASS},
+    Token{"struct", TokenType::STRUCT},
+    Token{"import", TokenType::IMPORT},
 };
 
 std::vector<Token> delimiters = {
@@ -33,6 +39,10 @@ std::vector<Token> delimiters = {
     Token{"!=", TokenType::BANG_EQUAL},
     Token{"=", TokenType::SET_EQUAL},
     Token{"==", TokenType::EQUAL},
+    Token{">", TokenType::GREATER},
+    Token{">=", TokenType::GREATER_EQUAL},
+    Token{"<", TokenType::LESS},
+    Token{"<=", TokenType::LESS_EQUAL},
 };
 
 namespace SunflowerCompiler
@@ -96,6 +106,7 @@ namespace SunflowerCompiler
             }
             Advance();
         }
+        tokens.push_back(Token{"EOF", TokenType::END_OF_FILE});
     }
 
     void Lexer::Keyword()
@@ -106,7 +117,6 @@ namespace SunflowerCompiler
             Advance();
         }
         std::string value = source.substr(start, index - start);
-        std::cerr << value << std::endl;
         auto it = std::find_if(
             keywords.begin(), keywords.end(),
             [value](Token const &token)
