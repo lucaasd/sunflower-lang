@@ -118,6 +118,42 @@ TEST(LexerTest, TestCharWithMultipleTokens)
     EXPECT_EQ(token.name, "'a'");
 }
 
+TEST(LexerTest, TestVariableDeclaration)
+{
+    std::string source = "var a int = 0";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    EXPECT_EQ(tokens[0].name, "var");
+    EXPECT_EQ(tokens[1].name, "a");
+    EXPECT_EQ(tokens[2].name, "int");
+    EXPECT_EQ(tokens[3].name, "=");
+    EXPECT_EQ(tokens[4].name, "0");
+    EXPECT_EQ(tokens[0].type, TokenType::VAR);
+    EXPECT_EQ(tokens[1].type, TokenType::SYMBOL);
+    EXPECT_EQ(tokens[2].type, TokenType::SYMBOL);
+    EXPECT_EQ(tokens[3].type, TokenType::SET_EQUAL);
+    EXPECT_EQ(tokens[4].type, TokenType::INT_NUMBER);
+}
+
+TEST(LexerTest, TestConstantDeclaration)
+{
+    std::string source = "const a int = 5";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    EXPECT_EQ(tokens[0].name, "const");
+    EXPECT_EQ(tokens[1].name, "a");
+    EXPECT_EQ(tokens[2].name, "int");
+    EXPECT_EQ(tokens[3].name, "=");
+    EXPECT_EQ(tokens[4].name, "5");
+    EXPECT_EQ(tokens[0].type, TokenType::CONST);
+    EXPECT_EQ(tokens[1].type, TokenType::SYMBOL);
+    EXPECT_EQ(tokens[2].type, TokenType::SYMBOL);
+    EXPECT_EQ(tokens[3].type, TokenType::SET_EQUAL);
+    EXPECT_EQ(tokens[4].type, TokenType::INT_NUMBER);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
