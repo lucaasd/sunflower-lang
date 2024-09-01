@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+set(CMAKE_CXX_STANDARD 20)
+
 find_program(CLANG_PATH clang)
 find_program(CLANG_CPP_PATH clang++)
 
