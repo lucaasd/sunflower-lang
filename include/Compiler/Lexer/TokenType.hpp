@@ -41,6 +41,7 @@ namespace SunflowerCompiler
         END_OF_FILE,
         INT_NUMBER,
         FLOAT_NUMBER,
+        PREFIXED_NUMBER,
         STRING,
         CHAR,
         REGEX,
