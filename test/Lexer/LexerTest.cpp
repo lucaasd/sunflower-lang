@@ -154,6 +154,28 @@ TEST(LexerTest, TestConstantDeclaration)
     EXPECT_EQ(tokens[4].type, TokenType::INT_NUMBER);
 }
 
+TEST(LexerTest, TestPrefixedNumber)
+{
+    std::string source = "0x80";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    EXPECT_EQ(tokens[0].name, "0x80");
+    std::cout << magic_enum::enum_name(tokens[0].type) << std::endl;
+    EXPECT_EQ(tokens[0].type, TokenType::PREFIXED_NUMBER);
+}
+
+TEST(LexerTest, TestPrefixedNumberWithLongPrefix)
+{
+    std::string source = "0bin01111000";
+    Lexer lexer(source);
+    lexer.Tokenize();
+    std::vector<Token> tokens = lexer.GetTokens();
+    EXPECT_EQ(tokens[0].name, "0bin01111000");
+    std::cout << magic_enum::enum_name(tokens[0].type) << std::endl;
+    EXPECT_EQ(tokens[0].type, TokenType::PREFIXED_NUMBER);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
