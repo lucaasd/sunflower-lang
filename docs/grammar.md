@@ -1,4 +1,4 @@
-## Sunflower lang grammar
+# Sunflower lang grammar
 
 ### Some warnings:
 
