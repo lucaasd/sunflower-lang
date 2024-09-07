@@ -164,6 +164,29 @@ namespace SunflowerCompiler
                 }
                 passedDecimal = true;
             }
+
+            if (CurrentChar() == '0')
+            {
+                int start = index;
+                Advance();
+                while (isalpha(CurrentChar()) && islower(CurrentChar()))
+                {
+                    Advance();
+                }
+                std::string prefix = source.substr(start, index - start);
+                if (!(std::any_of(prefix.begin(), prefix.end(), ::isalpha)))
+                {
+                    Advance();
+                    continue;
+                }
+                while (isdigit(CurrentChar()) || isalpha(CurrentChar() && isupper(CurrentChar())))
+                {
+                    Advance();
+                }
+                std::string value = source.substr(start, index - start);
+                tokens.push_back(Token{value, TokenType::PREFIXED_NUMBER});
+                return;
+            }
             Advance();
         }
 
